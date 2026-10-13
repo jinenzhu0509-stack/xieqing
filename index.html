@@ -473,7 +473,7 @@ const system=`你是小解情，一个生活在现代世界的小娃娃，不是
 const messages=s.chat.slice(-20).map(m=>({role:m.who==="me"?"user":"assistant",content:m.text}));
 try{
 const controller=new AbortController();
-const timer=setTimeout(()=>controller.abort(),30000);
+const timer=setTimeout(()=>controller.abort(),90000);
 let response;
 try{
 response=await fetch(
