@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小解情的日常</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7f3;color:#34443a;font:15px/1.6 system-ui,sans-serif}
+main{max-width:700px;margin:auto;padding:20px 14px 95px}
+h1{font-size:24px;margin:0}h2{font-size:19px;margin:0 0 12px}
+.card{background:white;border:1px solid #dfe7df;border-radius:20px;padding:17px;margin:13px 0}
+.muted{font-size:13px;color:#78867b}
+.row{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button,input,select{font:inherit;border-radius:11px;padding:10px}
+button{background:white;border:1px solid #dce6de;color:#365244;cursor:pointer}
+button.primary{background:#4e806d;color:white;border-color:#4e806d}
+input,select{width:100%;border:1px solid #dce6de;min-width:0}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:9px 2px 16px;border-top:1px solid #dce6de}
+nav button{border:0;padding:7px;font-size:14px}
+nav button.on{color:#3e8064;font-weight:bold}
+.hide{display:none}
+.bubble{padding:12px;background:#eff4ef;border-radius:14px;margin:10px 0}
+.bar{height:8px;background:#edf1ed;border-radius:8px;overflow:hidden}
+.fill{height:100%;background:#84b29b}
+.stat{margin:12px 0}
+.money{font-size:30px;color:#4e806d;font-weight:bold}
+#messages{height:45vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:8px 0}
+.msg{padding:11px;border-radius:14px;background:#eff3ef;max-width:88%;align-self:flex-start;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.me{background:#dceee2;align-self:flex-end}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #edf0ec}
+.filters{display:flex;overflow:auto;gap:6px;margin:10px 0}
+.filters button{white-space:nowrap}
+.filters .on{background:#e1eee5}
+a{color:#397b60}
+</style>
+</head>
+<body>
+<main>
+<div class="muted">JIEQING · LITTLE DAYS</div>
+<h1>小解情的日常</h1>
+<div class="muted">AI 聊天 · 娃娃养成 · 购物存钱</div>
+
+<section id="home">
+<div class="card">
+<div class="row"><h2>小解情</h2><span id="health" class="muted"></span></div>
+<div id="speech" class="bubble"></div>
+<div class="row"><span id="sleepState"></span><button id="sleepBtn">睡觉 / 叫醒</button></div>
+<div id="stats"></div>
+</div>
+<div class="card">
+<h2>今天的生活</h2>
+<div id="daily" class="muted"></div>
+<p class="muted">购买前请先将相同金额存入自己的银行账户。游戏只负责记录，不会自动转账。</p>
+<div id="quick" class="grid"></div>
+</div>
+<div class="card">
+<div class="muted">累计储蓄</div>
+<div id="homeSaved" class="money"></div>
+</div>
+</section>
+
+<section id="chat" class="hide">
+<div class="card">
+<h2>和小解情聊天</h2>
+<p id="aiStatus" class="muted"></p>
+<div id="messages"></div>
+<div class="row">
+<input id="chatInput" placeholder="跟他说点什么……" maxlength="500">
+<button class="primary" id="send">发送</button>
+</div>
+</div>
+</section>
+
+<section id="shop" class="hide">
+<div class="card">
+<h2>小解情的商店</h2>
+<input id="search" placeholder="搜索商品">
+<div id="filters" class="filters"></div>
+<div id="products"></div>
+<button id="more">查看更多</button>
+</div>
+<div class="card">
+<h2>自定义购买</h2>
+<div class="grid">
+<input id="customName" placeholder="商品名称">
+<input id="customPrice" type="number" placeholder="价格 ₩">
+</div>
+<div class="grid" style="margin-top:8px">
+<select id="customCat">
+<option>自定义</option><option>娱乐</option><option>正餐</option><option>饮料</option><option>衣服</option><option>玩具</option><option>生活</option>
+</select>
+<select id="customKind">
+<option value="item">物品</option>
+<option value="food">食物</option>
+<option value="water">饮料</option>
+<option value="mood">娱乐</option>
+<option value="medicine">药品</option>
+</select>
+</div>
+<button id="customBuy" class="primary" style="margin-top:10px">确认存钱并购买</button>
+</div>
+</section>
+
+<section id="records" class="hide">
+<div class="card">
+<h2>储蓄记录</h2>
+<div id="recordSaved" class="money"></div>
+<p id="goalText" class="muted"></p>
+<div class="row">
+<input id="goalInput" type="number" placeholder="目标金额 ₩">
+<button id="goalBtn">设置目标</button>
+</div>
+<div id="logs"></div>
+</div>
+<div class="card">
+<h2>备份</h2>
+<p class="muted">可下载 JSON 存档，之后手动保存到 Google Drive。备份不包含 API 密钥。</p>
+<button id="export">导出备份</button>
+<button id="import">导入备份</button>
+<input id="file" type="file" accept=".json" class="hide">
+</div>
+</section>
+
+<section id="settings" class="hide">
+<div class="card">
+<h2>真正 AI 聊天设置</h2>
+<p class="muted">使用 OpenAI API，需要联网，并按 API 使用量单独计费。</p>
+<p><a href="https://platform.openai.com/api-keys" target="_blank">创建 API 密钥</a></p>
+<input id="apiKey" type="password" placeholder="粘贴 API 密钥">
+<p class="muted">密钥默认只保存在当前浏览器会话。选择记住密钥会增加安全风险。</p>
+<label><input type="checkbox" id="remember" style="width:auto"> 在本机记住密钥</label>
+<p class="muted">AI 模型</p>
+<input id="model" value="gpt-4.1-mini">
+<div class="row" style="margin-top:12px">
+<button class="primary" id="saveApi">保存设置</button>
+<button id="clearApi">清除密钥</button>
+</div>
+<p id="keyMessage" class="muted"></p>
+</div>
+</section>
+</main>
+
+<nav>
+<button class="on" data-tab="home">日常</button>
+<button data-tab="chat">聊天</button>
+<button data-tab="shop">商店</button>
+<button data-tab="records">记录</button>
+<button data-tab="settings">AI设置</button>
+</nav>
+
+<script>
+"use strict";
+const $=x=>document.getElementById(x);
+const won=x=>"₩"+Number(x).toLocaleString("ko-KR");
+const clamp=x=>Math.max(0,Math.min(100,x));
+const SAVE="little_xieqing_web_v1";
+const API="little_xieqing_api";
+
+const base=[
+["正餐","饭团",1800,"food"],["正餐","鸡蛋盖饭",4500,"food"],
+["正餐","咖喱饭",5500,"food"],["正餐","牛肉饭",7000,"food"],
+["正餐","寿司",6500,"food"],["正餐","乌冬面",5500,"food"],
+["正餐","拉面",5000,"food"],["正餐","饺子汤",5500,"food"],
+["正餐","炒饭",5500,"food"],["正餐","三明治",4500,"food"],
+["饮料","矿泉水",1000,"water"],["饮料","牛奶",1700,"water"],
+["饮料","草莓牛奶",1900,"water"],["饮料","麦茶",1600,"water"],
+["饮料","橙汁",2500,"water"],["饮料","柠檬水",3500,"water"],
+["饮料","酸奶",1800,"water"],["饮料","热可可",3500,"water"],
+["零食","小饼干",1500,"food"],["零食","布丁",2200,"food"],
+["零食","冰淇淋",2500,"food"],["零食","小蛋糕",4500,"food"],
+["零食","巧克力",2500,"food"],["零食","水果杯",3500,"food"],
+["娱乐","游乐园门票",12000,"mood"],["娱乐","水族馆门票",12000,"mood"],
+["娱乐","电影院门票",11000,"mood"],["娱乐","动物园门票",12000,"mood"],
+["娱乐","旋转木马",5000,"mood"],["娱乐","摩天轮",6000,"mood"],
+["娱乐","碰碰车",4500,"mood"],["娱乐","游戏厅",5000,"mood"],
+["娱乐","抓娃娃",3000,"mood"],["娱乐","植物园",6000,"mood"],
+["娱乐","陶艺体验",12000,"mood"],["娱乐","小火车",4500,"mood"],
+["娱乐","野餐",3000,"mood"],["娱乐","儿童剧",12000,"mood"],
+["衣服","娃娃白T恤",3000,"item"],["衣服","娃娃卫衣",6000,"item"],
+["衣服","娃娃背带裤",7000,"item"],["衣服","娃娃小鞋",8000,"item"],
+["衣服","娃娃袜子",1500,"item"],["衣服","娃娃针织衫",6500,"item"],
+["衣服","娃娃帽子",3500,"item"],["衣服","娃娃小外套",7500,"item"],
+["玩具","小熊玩偶",5000,"item"],["玩具","积木",4500,"item"],
+["玩具","拼图",3500,"item"],["玩具","小汽车",4000,"item"],
+["玩具","绘本",3500,"item"],["玩具","贴纸",2000,"item"],
+["玩具","玩具相机",6500,"item"],["玩具","迷你篮球",4000,"item"],
+["生活","娃娃小床",12000,"item"],["生活","小被子",6500,"item"],
+["生活","小抱枕",4500,"item"],["生活","小镜子",3500,"item"],
+["生活","小桌子",9000,"item"],["生活","小台灯",6500,"item"],
+["药品","退烧药",4500,"medicine"],["药品","感冒药",5000,"medicine"],
+["数码大件","掌上游戏机",79000,"item"],
+["数码大件","游戏主机",249000,"item"],
+["数码大件","游戏手柄",35000,"item"],
+["数码大件","平板电脑",179000,"item"]
+];
+const products=base.map(([cat,name,price,kind])=>({cat,name,price,kind}));
+const variations=["迷你","小份","经典","可爱","彩色","特别","限定","日常"];
+const expandable=base.filter(x=>!["数码大件","药品"].includes(x[0]));
+let ix=0;
+while(products.length<301){
+const b=expandable[ix%expandable.length];
+const variant=variations[Math.floor(ix/expandable.length)%variations.length];
+const name=variant+b[1];
+if(!products.some(p=>p.name===name)){
+products.push({cat:b[0],name,price:Math.min(15000,Math.max(1000,b[2]+(ix%3-1)*500)),kind:b[3]});
+}
+ix++;
+}
+
+const fresh=()=>({
+saved:0,goal:500000,logs:[],
+chat:[{who:"jq",text:"你来啦！我刚刚还在想今天要做什么呢。"}],
+stats:{food:78,water:85,energy:88,mood:80},
+sleeping:false,sleepNight:"",
+speech:"今天要一起做点什么？",
+ill:false,last:Date.now(),day:"",
+meals:0,drinks:0
+});
+let s=fresh();
+try{
+const saved=JSON.parse(localStorage.getItem(SAVE)||"null");
+if(saved)s={...fresh(),...saved,stats:{...fresh().stats,...saved.stats}};
+}catch(e){console.warn(e)}
+let tab="home",cat="全部",search="",limit=30,busy=false;
+function persist(){try{localStorage.setItem(SAVE,JSON.stringify(s))}catch(e){console.warn(e)}}
+
+function tick(){
+const now=new Date(),day=now.toLocaleDateString("sv-SE"),hour=now.getHours();
+const hours=Math.max(0,Math.min(24,(Date.now()-s.last)/3600000));
+s.last=Date.now();
+if(s.day!==day){
+const first=!s.day;
+s.day=day;s.meals=0;s.drinks=0;
+if(!first){
+s.stats.food=40;s.stats.water=45;
+s.stats.energy=Math.max(75,s.stats.energy);
+if(Math.random()<.08){s.ill=true;s.speech="今天好像有点不舒服……"}
+else if(s.ill&&Math.random()<.4)s.ill=false;
+}
+}
+s.stats.food=clamp(s.stats.food-hours*.65);
+s.stats.water=clamp(s.stats.water-hours*.9);
+s.stats.energy=clamp(s.stats.energy+(s.sleeping?hours*7:-hours*.5));
+if((hour>=22||hour<6)&&!s.sleeping&&s.sleepNight!==day){
+s.sleeping=true;s.speech="晚安，我先睡啦。";
+}
+if(hour>=7&&hour<22&&s.sleeping&&s.sleepNight!==day){
+s.sleeping=false;s.sleepNight=day;s.stats.energy=100;
+s.speech="早上好！我醒啦！";
+}
+persist();
+}
+function buy(p){
+if(!confirm("请先确认已经真实存入 "+won(p.price)+"。\n购买 "+p.name+"？"))return;
+s.saved+=p.price;
+s.logs.unshift({name:p.name,price:p.price,cat:p.cat,date:new Date().toISOString()});
+if(p.kind==="food"){s.stats.food=clamp(s.stats.food+35);s.meals++}
+if(p.kind==="water"){s.stats.water=clamp(s.stats.water+35);s.drinks++}
+if(p.kind==="item"||p.kind==="mood")s.stats.mood=clamp(s.stats.mood+8);
+if(p.kind==="medicine")s.ill=false;
+s.speech="是"+p.name+"！谢谢你，我喜欢这个！";
+persist();render();alert("已记录 "+won(p.price));
+}
+function buttonFor(p){
+const b=document.createElement("button");
+b.textContent=p.name+" "+won(p.price);
+b.onclick=()=>buy(p);
+return b;
+}
+function home(){
+tick();
+$("health").textContent=s.ill?"有点生病":s.stats.mood>60?"心情不错":"有点无聊";
+$("speech").textContent=s.speech;
+$("sleepState").textContent=s.sleeping?"正在睡觉":"醒着";
+$("sleepBtn").textContent=s.sleeping?"叫醒他":"让他睡觉";
+$("homeSaved").textContent=won(s.saved);
+$("daily").textContent="今天吃饭 "+s.meals+" 次 · 喝水 "+s.drinks+" 次";
+$("stats").replaceChildren();
+for(const [key,name] of Object.entries({food:"饱腹",water:"水分",energy:"精力",mood:"心情"})){
+const div=document.createElement("div");
+div.className="stat";
+div.innerHTML='<div class="row"><span>'+name+'</span><span>'+Math.round(s.stats[key])+'%</span></div><div class="bar"><div class="fill" style="width:'+s.stats[key]+'%"></div></div>';
+$("stats").append(div);
+}
+$("quick").replaceChildren(...products.slice(0,8).map(buttonFor));
+}
+function chatRender(){
+$("messages").replaceChildren(...s.chat.slice(-80).map(m=>{
+const d=document.createElement("div");
+d.className="msg"+(m.who==="me"?" me":"");
+d.textContent=m.text;return d;
+}));
+$("messages").scrollTop=$("messages").scrollHeight;
+$("aiStatus").textContent=getKey()?"AI 已配置，聊天需要联网。":"请先进入 AI设置，填写 API 密钥。";
+}
+function shopRender(){
+const categories=["全部",...new Set(products.map(p=>p.cat))];
+$("filters").replaceChildren(...categories.map(c=>{
+const b=document.createElement("button");
+b.textContent=c;b.className=c===cat?"on":"";
+b.onclick=()=>{cat=c;limit=30;shopRender()};
+return b;
+}));
+const matches=products.filter(p=>(cat==="全部"||p.cat===cat)&&(!search||p.name.includes(search)));
+$("products").replaceChildren(...matches.slice(0,limit).map(p=>{
+const d=document.createElement("div"),t=document.createElement("span");
+d.className="item";t.textContent=p.name+" · "+p.cat;
+const b=document.createElement("button");
+b.textContent=won(p.price);b.onclick=()=>buy(p);
+d.append(t,b);return d;
+}));
+$("more").style.display=matches.length>limit?"block":"none";
+}
+function recordRender(){
+$("recordSaved").textContent=won(s.saved);
+$("goalText").textContent="目标 "+won(s.goal)+" · 已完成 "+Math.min(100,Math.round(s.saved/s.goal*100))+"%";
+$("logs").replaceChildren(...s.logs.slice(0,80).map(x=>{
+const d=document.createElement("div");d.className="item";
+d.textContent=x.name+" · "+won(x.price);return d;
+}));
+}
+function render(){
+if(tab==="home")home();
+if(tab==="chat")chatRender();
+if(tab==="shop")shopRender();
+if(tab==="records")recordRender();
+}
+function showTab(name){
+tab=name;
+document.querySelectorAll("main section").forEach(x=>x.classList.toggle("hide",x.id!==name));
+document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x.dataset.tab===name));
+render();
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+$("sleepBtn").onclick=()=>{
+s.sleeping=!s.sleeping;
+if(!s.sleeping){s.sleepNight=new Date().toLocaleDateString("sv-SE");s.stats.energy=100}
+s.speech=s.sleeping?"晚安，明天见！":"醒啦！你找我吗？";
+persist();home();
+};
+$("search").oninput=e=>{search=e.target.value;limit=30;shopRender()};
+$("more").onclick=()=>{limit+=30;shopRender()};
+$("customBuy").onclick=()=>{
+const name=$("customName").value.trim(),price=Number($("customPrice").value);
+if(!name||!Number.isSafeInteger(price)||price<1){alert("请填写商品名称和有效价格");return}
+buy({name,price,cat:$("customCat").value,kind:$("customKind").value});
+};
+$("goalBtn").onclick=()=>{
+const n=Number($("goalInput").value);
+if(Number.isSafeInteger(n)&&n>0){s.goal=n;persist();recordRender()}
+};
+$("export").onclick=()=>{
+const blob=new Blob([JSON.stringify({app:"小解情的日常",version:12,data:s},null,2)],{type:"application/json"});
+const a=document.createElement("a"),url=URL.createObjectURL(blob);
+a.href=url;a.download="xieqing_backup.json";a.click();
+setTimeout(()=>URL.revokeObjectURL(url),2000);
+};
+$("import").onclick=()=>$("file").click();
+$("file").onchange=async e=>{
+try{
+const obj=JSON.parse(await e.target.files[0].text());
+if(!obj.data||!Array.isArray(obj.data.logs))throw Error("无效存档");
+if(confirm("确定覆盖当前存档？")){
+s={...fresh(),...obj.data,stats:{...fresh().stats,...obj.data.stats}};
+persist();render();alert("恢复成功");
+}
+}catch(err){alert("导入失败："+err.message)}
+};
+
+function getKey(){
+try{return sessionStorage.getItem(API)||localStorage.getItem(API)||""}
+catch{return ""}
+}
+$("saveApi").onclick=()=>{
+const key=$("apiKey").value.trim();
+if(!key){$("keyMessage").textContent="请填写密钥";return}
+try{
+localStorage.removeItem(API);sessionStorage.removeItem(API);
+($("remember").checked?localStorage:sessionStorage).setItem(API,key);
+$("keyMessage").textContent="设置已保存，可以开始聊天。";
+}catch(e){$("keyMessage").textContent="浏览器无法保存密钥。"}
+};
+$("clearApi").onclick=()=>{
+localStorage.removeItem(API);sessionStorage.removeItem(API);
+$("apiKey").value="";$("keyMessage").textContent="密钥已清除";
+};
+$("apiKey").value=getKey();
+$("remember").checked=!!localStorage.getItem(API);
+
+async function send(){
+if(busy)return;
+const t=$("chatInput").value.trim();
+if(!t)return;
+const key=getKey();
+if(!key){showTab("settings");$("keyMessage").textContent="请先填写 API 密钥。";return}
+busy=true;$("send").disabled=true;$("send").textContent="思考中";
+$("chatInput").value="";
+s.chat.push({who:"me",text:t});persist();chatRender();
+const system=`你是小解情，一个生活在现代世界的小娃娃，不是成年人。性格活泼、聪明、有点调皮，但不刻意撒娇。自然地使用简体中文，每次通常回答1到3句话。认真回答问题，记住上下文，能回应问候和追问。你的游戏状态是：${JSON.stringify({睡觉:s.sleeping,生病:s.ill,饱腹:s.stats.food,水分:s.stats.water,心情:s.stats.mood,今天吃饭:s.meals,今天喝水:s.drinks,最近购买:s.logs.slice(0,5).map(x=>x.name)})}。不要虚构已经发生的购物或转账。`;
+const messages=s.chat.slice(-20).map(m=>({role:m.who==="me"?"user":"assistant",content:m.text}));
+try{
+const controller=new AbortController();
+const timer=setTimeout(()=>controller.abort(),30000);
+let response;
+try{
+response=await fetch("https://api.openai.com/v1/chat/completions",{
+method:"POST",
+headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+body:JSON.stringify({
+model:$("model").value.trim()||"gpt-4.1-mini",
+messages:[{role:"system",content:system},...messages],
+max_tokens:250,temperature:0.8
+}),
+signal:controller.signal
+});
+}finally{clearTimeout(timer)}
+const result=await response.json().catch(()=>({}));
+if(!response.ok)throw Error(result.error?.message||"HTTP "+response.status);
+const reply=result.choices?.[0]?.message?.content;
+if(!reply)throw Error("AI 没有返回内容");
+s.chat.push({who:"jq",text:reply});
+s.speech=reply;s.stats.mood=clamp(s.stats.mood+1);
+}catch(e){
+s.chat.push({who:"jq",text:"（AI 连接失败："+(e.name==="AbortError"?"请求超时":e.message)+"。请检查 API 密钥、账户余额和网络。）"});
+}finally{
+busy=false;$("send").disabled=false;$("send").textContent="发送";
+s.chat=s.chat.slice(-200);persist();chatRender();
+}
+}
+$("send").onclick=send;
+$("chatInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();send()}};
+showTab("home");
+</script>
+</body>
+</html>
