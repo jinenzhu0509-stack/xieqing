@@ -115,6 +115,12 @@ a{color:#397b60}
 <div id="logs"></div>
 </div>
 <div class="card">
+<h2>小解情的生活档案</h2>
+<p class="muted">按日期查看真实记录。状态保存当天最后一次实际记录的数值与时间；未打开游戏的日子不生成虚构状态。</p>
+<input id="archiveDate" type="date" aria-label="选择查看日期">
+<div id="archiveView" style="margin-top:12px"></div>
+</div>
+<div class="card">
 <h2>备份</h2>
 <p class="muted">可下载 JSON 存档，之后手动保存到 Google Drive。备份不包含 API 密钥。</p>
 <button id="export">导出备份</button>
@@ -125,14 +131,13 @@ a{color:#397b60}
 
 <section id="settings" class="hide">
 <div class="card">
-<h2>真正 AI 聊天设置</h2>
-<p class="muted">使用 OpenAI API，需要联网，并按 API 使用量单独计费。</p>
-<p><a href="https://platform.openai.com/api-keys" target="_blank">创建 API 密钥</a></p>
-<input id="apiKey" type="password" placeholder="粘贴 API 密钥">
+<h2>Gemini AI 聊天设置</h2>
+<p class="muted">使用 Google Gemini API，需要联网。免费额度和使用限制以 Google AI Studio 显示为准。</p>
+<p><a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">创建 Gemini API 密钥</a></p>
+<input id="apiKey" type="password" placeholder="粘贴 Gemini API 密钥">
 <p class="muted">密钥默认只保存在当前浏览器会话。选择记住密钥会增加安全风险。</p>
 <label><input type="checkbox" id="remember" style="width:auto"> 在本机记住密钥</label>
-<p class="muted">AI 模型</p>
-<input id="model" value="gpt-4.1-mini">
+<p class="muted">AI 模型：Gemini</p>
 <div class="row" style="margin-top:12px">
 <button class="primary" id="saveApi">保存设置</button>
 <button id="clearApi">清除密钥</button>
@@ -216,7 +221,7 @@ stats:{food:35,water:40,energy:75,mood:70},
 sleeping:false,sleepNight:"",
 speech:"今天要一起做点什么？",
 ill:false,last:Date.now(),day:"",
-meals:0,drinks:0
+meals:0,drinks:0,archive:{}
 });
 let s=fresh();
 try{
@@ -224,11 +229,35 @@ const saved=JSON.parse(localStorage.getItem(SAVE)||"null");
 if(saved)s={...fresh(),...saved,stats:{...fresh().stats,...saved.stats}};
 }catch(e){console.warn(e)}
 let tab="home",cat="全部",search="",limit=30,busy=false;
-function persist(){try{localStorage.setItem(SAVE,JSON.stringify(s))}catch(e){console.warn(e)}}
+
+const localDay=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const localTime=(d=new Date())=>`${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+function archiveEntry(day){
+ if(!s.archive||typeof s.archive!=="object")s.archive={};
+ return s.archive[day]||(s.archive[day]={events:[]});
+}
+function snapshot(day=localDay(),when=new Date()){
+ const a=archiveEntry(day);
+ a.snapshot={stats:{...s.stats},ill:!!s.ill,sleeping:!!s.sleeping,
+ meals:s.meals,drinks:s.drinks,at:localTime(when)};
+}
+function eventLog(message,at=new Date()){
+ const a=archiveEntry(localDay(at));
+ a.events.push({at:localTime(at),text:message});
+ snapshot(localDay(at),at);
+}
+function persist(){
+ try{snapshot();localStorage.setItem(SAVE,JSON.stringify(s))}
+ catch(e){console.warn(e)}
+}
 
 function tick(){
-const now=new Date(),day=now.toLocaleDateString("sv-SE"),hour=now.getHours();
+const now=new Date(),day=localDay(now),hour=now.getHours();
+const previous=new Date(s.last||Date.now());
 const hours=Math.max(0,Math.min(24,(Date.now()-s.last)/3600000));
+if(s.day&&s.day!==day&&localDay(previous)===s.day&&!(s.archive||{})[s.day]?.snapshot){
+ snapshot(s.day,previous);
+}
 s.last=Date.now();
 if(s.day!==day){
 const first=!s.day;
@@ -236,19 +265,19 @@ s.day=day;s.meals=0;s.drinks=0;
 if(!first){
 s.stats.food=40;s.stats.water=45;
 s.stats.energy=Math.max(75,s.stats.energy);
-if(Math.random()<.08){s.ill=true;s.speech="今天好像有点不舒服……"}
-else if(s.ill&&Math.random()<.4)s.ill=false;
+if(Math.random()<.08){s.ill=true;s.speech="今天好像有点不舒服……";eventLog("发现身体不舒服")}
+else if(s.ill&&Math.random()<.4){s.ill=false;eventLog("身体恢复健康")}
 }
 }
 s.stats.food=clamp(s.stats.food-hours*.65);
 s.stats.water=clamp(s.stats.water-hours*.9);
 s.stats.energy=clamp(s.stats.energy+(s.sleeping?hours*7:-hours*.5));
 if((hour>=22||hour<6)&&!s.sleeping&&s.sleepNight!==day){
-s.sleeping=true;s.speech="晚安，我先睡啦。";
+s.sleeping=true;s.speech="晚安，我先睡啦。";eventLog("自动进入睡眠状态");
 }
 if(hour>=7&&hour<22&&s.sleeping&&s.sleepNight!==day){
 s.sleeping=false;s.sleepNight=day;s.stats.energy=100;
-s.speech="早上好！我醒啦！";
+s.speech="早上好！我醒啦！";eventLog("醒来了");
 }
 persist();
 }
@@ -260,6 +289,8 @@ if(p.kind==="food"){s.stats.food=clamp(s.stats.food+35);s.meals++}
 if(p.kind==="water"){s.stats.water=clamp(s.stats.water+35);s.drinks++}
 if(p.kind==="item"||p.kind==="mood")s.stats.mood=clamp(s.stats.mood+8);
 if(p.kind==="medicine")s.ill=false;
+const action=p.kind==="food"?"吃了":p.kind==="water"?"喝了":p.kind==="medicine"?"使用药品":"购买了";
+eventLog(action+p.name+(p.kind==="medicine"?"，身体恢复健康":""));
 s.speech="是"+p.name+"！谢谢你，我喜欢这个！";
 persist();render();alert("已记录 "+won(p.price));
 }
@@ -313,13 +344,51 @@ d.append(t,b);return d;
 }));
 $("more").style.display=matches.length>limit?"block":"none";
 }
+function archiveRender(){
+ const picker=$("archiveDate");
+ if(!picker.value)picker.value=localDay();
+ const day=picker.value,a=(s.archive||{})[day];
+ const purchases=s.logs.filter(x=>x.date&&localDay(new Date(x.date))===day);
+ const total=purchases.reduce((sum,x)=>sum+(Number(x.price)||0),0);
+ const view=$("archiveView");view.replaceChildren();
+ const line=(label,value)=>{
+  const d=document.createElement("div");d.className="item";
+  const strong=document.createElement("strong");strong.textContent=label;
+  const span=document.createElement("span");span.textContent=value;
+  d.append(strong,span);view.append(d);
+ };
+ const snap=a?.snapshot;
+ if(snap){
+  const st=snap.stats||{};
+  line("状态记录时间",snap.at||"时间未知");
+  for(const [key,label] of Object.entries({food:"饱腹",water:"水分",energy:"精力",mood:"心情"})){
+   line(label,st[key]===undefined?"未记录":Math.round(st[key])+"%");
+  }
+  line("健康",snap.ill?"生病":"健康");
+  line("作息状态",snap.sleeping?"睡觉中":"醒着");
+  line("当天吃饭 / 喝水次数",`${snap.meals??"?"} / ${snap.drinks??"?"}`);
+ }else{
+  const note=document.createElement("p");note.className="muted";
+  note.textContent="这一天没有保存身体状态快照。";view.append(note);
+ }
+ const title=document.createElement("h3");title.textContent="当天生活事件";view.append(title);
+ const events=a?.events||[];
+ if(events.length){for(const e of events){const d=document.createElement("div");d.className="item";d.textContent=(e.at||"--:--")+" · "+e.text;view.append(d)}}
+ else{const note=document.createElement("p");note.className="muted";note.textContent="没有单独记录的生活事件。";view.append(note)}
+ const h=document.createElement("h3");h.textContent="购物与存钱";view.append(h);
+ line("当天记录存钱",won(total));
+ for(const x of purchases){const d=document.createElement("div");d.className="item";d.textContent=`${localTime(new Date(x.date))} · ${x.name} · ${won(x.price)}`;view.append(d)}
+ if(!purchases.length){const d=document.createElement("p");d.className="muted";d.textContent="没有购物记录。";view.append(d)}
+}
+$("archiveDate").onchange=archiveRender;
 function recordRender(){
 $("recordSaved").textContent=won(s.saved);
 $("goalText").textContent="目标 "+won(s.goal)+" · 已完成 "+Math.min(100,Math.round(s.saved/s.goal*100))+"%";
 $("logs").replaceChildren(...s.logs.slice(0,80).map(x=>{
 const d=document.createElement("div");d.className="item";
-d.textContent=x.name+" · "+won(x.price);return d;
+d.textContent=x.name+" · "+won(x.price)+(x.date?" · "+localDay(new Date(x.date)):"");return d;
 }));
+archiveRender();
 }
 function render(){
 if(tab==="home")home();
@@ -336,8 +405,9 @@ render();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 $("sleepBtn").onclick=()=>{
 s.sleeping=!s.sleeping;
-if(!s.sleeping){s.sleepNight=new Date().toLocaleDateString("sv-SE");s.stats.energy=100}
+if(!s.sleeping){s.sleepNight=localDay();s.stats.energy=100}
 s.speech=s.sleeping?"晚安，明天见！":"醒啦！你找我吗？";
+eventLog(s.sleeping?"主动睡觉":"被叫醒了");
 persist();home();
 };
 $("search").oninput=e=>{search=e.target.value;limit=30;shopRender()};
@@ -352,7 +422,7 @@ const n=Number($("goalInput").value);
 if(Number.isSafeInteger(n)&&n>0){s.goal=n;persist();recordRender()}
 };
 $("export").onclick=()=>{
-const blob=new Blob([JSON.stringify({app:"小解情的日常",version:12,data:s},null,2)],{type:"application/json"});
+const blob=new Blob([JSON.stringify({app:"小解情的日常",version:13,data:s},null,2)],{type:"application/json"});
 const a=document.createElement("a"),url=URL.createObjectURL(blob);
 a.href=url;a.download="xieqing_backup.json";a.click();
 setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -364,6 +434,7 @@ const obj=JSON.parse(await e.target.files[0].text());
 if(!obj.data||!Array.isArray(obj.data.logs))throw Error("无效存档");
 if(confirm("确定覆盖当前存档？")){
 s={...fresh(),...obj.data,stats:{...fresh().stats,...obj.data.stats}};
+$("archiveDate").value=localDay();
 persist();render();alert("恢复成功");
 }
 }catch(err){alert("导入失败："+err.message)}
