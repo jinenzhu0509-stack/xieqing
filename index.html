@@ -1214,7 +1214,7 @@ throw Error(
 let lastError=null;
 let reply="";
 
-for(const model of models.slice(0,4)){
+for(const model of models.slice(0,12)){
 try{
 reply=await generateWithModel(
 key,model,system,history
