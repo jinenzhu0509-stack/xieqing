@@ -1,46 +1,47 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>小解情的日常</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f5f7f3;color:#34443a;font:15px/1.6 system-ui,sans-serif}
-main{max-width:700px;margin:auto;padding:20px 14px 95px}
-h1{font-size:24px;margin:0}
+body{margin:0;background:#f5f7f3;color:#35463c;font:15px/1.6 system-ui,sans-serif}
+main{max-width:720px;margin:auto;padding:20px 14px 95px}
+h1{font-size:24px;margin:2px 0}
 h2{font-size:19px;margin:0 0 12px}
-h3{font-size:16px;margin:15px 0 8px}
-.card{background:white;border:1px solid #dfe7df;border-radius:20px;padding:17px;margin:13px 0}
-.muted{font-size:13px;color:#78867b}
-.row{display:flex;justify-content:space-between;align-items:center;gap:9px}
+h3{font-size:16px;margin:18px 0 8px}
+.muted,.note{font-size:13px;color:#748276}
+.card{background:white;border:1px solid #dfe7df;border-radius:18px;padding:16px;margin:13px 0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.money{font-size:29px;font-weight:700;color:#4b8067}
 button,input,select{font:inherit;border-radius:11px;padding:10px;min-width:0}
-button{background:white;border:1px solid #dce6de;color:#365244;cursor:pointer}
-button.primary{background:#4e806d;color:white;border-color:#4e806d}
+button{border:1px solid #d9e4dc;background:white;color:#345444;cursor:pointer}
+button.primary{background:#4c8068;color:white;border-color:#4c8068}
 button:disabled{opacity:.5}
-input,select{width:100%;border:1px solid #dce6de}
+input,select{width:100%;border:1px solid #d9e4dc}
 input[type=radio],input[type=checkbox]{width:auto}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:9px 2px 16px;border-top:1px solid #dce6de;z-index:10}
-nav button{border:0;padding:7px;font-size:14px}
-nav button.on{color:#3e8064;font-weight:bold}
-.hide{display:none!important}
-.bubble{padding:12px;background:#eff4ef;border-radius:14px;margin:10px 0;white-space:pre-wrap}
-.bar{height:8px;background:#edf1ed;border-radius:8px;overflow:hidden}
-.fill{height:100%;background:#84b29b}
+.hidden{display:none!important}
+.bubble{background:#eff4ef;padding:12px;border-radius:14px;margin:12px 0;white-space:pre-wrap}
 .stat{margin:12px 0}
-.money{font-size:30px;color:#4e806d;font-weight:bold}
-#messages{height:45vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:8px 0}
-.msg{padding:11px;border-radius:14px;background:#eff3ef;max-width:88%;align-self:flex-start;white-space:pre-wrap;overflow-wrap:anywhere}
-.msg.me{background:#dceee2;align-self:flex-end}
-.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #edf0ec;overflow-wrap:anywhere}
-.filters{display:flex;overflow:auto;gap:6px;margin:10px 0}
+.bar{height:8px;border-radius:8px;background:#edf1ed;overflow:hidden}
+.fill{height:100%;background:#87b49c}
+.item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #edf0ec}
+.item span{overflow-wrap:anywhere}
+.filters{display:flex;gap:7px;overflow:auto;padding:8px 0}
 .filters button{white-space:nowrap}
-.filters .on{background:#e1eee5}
-a{color:#397b60}
-dialog{border:1px solid #dce6de;border-radius:18px;padding:20px;width:min(90vw,420px);color:#34443a}
+.filters .active{background:#e2eee6}
+.messages{height:44vh;overflow:auto;display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.msg{max-width:88%;align-self:flex-start;background:#eef3ee;border-radius:14px;padding:11px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:#dceee2}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;padding:8px 2px 16px;background:white;border-top:1px solid #dce6de;z-index:5}
+nav button{border:0;font-size:14px;padding:8px 4px}
+nav button.active{color:#397b60;font-weight:bold}
+dialog{border:1px solid #dce6de;border-radius:18px;padding:18px;width:min(92vw,420px);color:#35463c}
 dialog::backdrop{background:#0006}
+.choice{display:block;margin:12px 0}
+a{color:#397b60}
 </style>
 </head>
 <body>
@@ -49,7 +50,7 @@ dialog::backdrop{background:#0006}
 <h1>小解情的日常</h1>
 <div class="muted">AI 聊天 · 娃娃养成 · 购物存钱</div>
 
-<section id="page-home">
+<section id="page-home" class="page">
 <div class="card">
 <div class="row">
 <h2>小解情</h2>
@@ -65,29 +66,29 @@ dialog::backdrop{background:#0006}
 <div class="card">
 <h2>今天的生活</h2>
 <div id="daily" class="muted"></div>
-<p class="muted">购买时可以选择使用钱包余额，或者使用自己的钱。</p>
+<p class="note">购买时可以选择钱包扣款或使用自己的钱。</p>
 <div id="quick" class="grid"></div>
 </div>
 <div class="card">
 <div class="muted">累计储蓄（已购买金额）</div>
 <div id="homeSaved" class="money"></div>
-<p class="muted">钱包可用余额：<strong id="homeWallet"></strong></p>
+<p class="muted">钱包余额：<strong id="homeWallet"></strong></p>
 </div>
 </section>
 
-<section id="page-chat" class="hide">
+<section id="page-chat" class="page hidden">
 <div class="card">
 <h2>和小解情聊天</h2>
 <p id="aiStatus" class="muted"></p>
-<div id="messages"></div>
+<div id="messages" class="messages"></div>
 <div class="row">
 <input id="chatInput" placeholder="跟他说点什么……" maxlength="500">
-<button class="primary" id="send">发送</button>
+<button id="send" class="primary">发送</button>
 </div>
 </div>
 </section>
 
-<section id="page-shop" class="hide">
+<section id="page-shop" class="page hidden">
 <div class="card">
 <h2>小解情的商店</h2>
 <input id="search" placeholder="搜索商品">
@@ -99,16 +100,13 @@ dialog::backdrop{background:#0006}
 <h2>自定义购买</h2>
 <div class="grid">
 <input id="customName" placeholder="商品名称">
-<input id="customPrice" type="number" placeholder="价格 ₩">
+<input id="customPrice" type="number" min="1" placeholder="价格 ₩">
 </div>
 <div class="grid" style="margin-top:8px">
 <select id="customCat">
-<option>自定义</option>
-<option>娱乐</option>
-<option>正餐</option>
-<option>饮料</option>
-<option>衣服</option>
-<option>玩具</option>
+<option>自定义</option><option>娱乐</option>
+<option>正餐</option><option>饮料</option>
+<option>衣服</option><option>玩具</option>
 <option>生活</option>
 </select>
 <select id="customKind">
@@ -123,15 +121,15 @@ dialog::backdrop{background:#0006}
 </div>
 </section>
 
-<section id="page-records" class="hide">
+<section id="page-records" class="page hidden">
 <div class="card">
 <h2>小解情的钱包</h2>
 <div class="muted">预存余额（不计入累计储蓄）</div>
-<div class="money" id="walletBalance"></div>
-<p class="muted">充值只是记录已经预留或存入的钱，不会自动操作银行卡。</p>
+<div id="walletBalance" class="money"></div>
+<p class="note">游戏不会真的转账。充值前请确认已经在现实中预留或存入对应金额。</p>
 <div class="row">
-<input id="topupAmount" type="number" min="1" step="1" placeholder="充值金额 ₩">
-<button class="primary" id="topupBtn">充值</button>
+<input id="topupAmount" type="number" min="1" placeholder="充值金额 ₩">
+<button id="topupBtn" class="primary">充值</button>
 </div>
 <h3>钱包流水</h3>
 <div id="walletHistory"></div>
@@ -141,7 +139,7 @@ dialog::backdrop{background:#0006}
 <div id="recordSaved" class="money"></div>
 <p id="goalText" class="muted"></p>
 <div class="row">
-<input id="goalInput" type="number" placeholder="目标金额 ₩">
+<input id="goalInput" type="number" min="1" placeholder="目标金额 ₩">
 <button id="goalBtn">设置目标</button>
 </div>
 <h3>购买记录</h3>
@@ -149,31 +147,31 @@ dialog::backdrop{background:#0006}
 </div>
 <div class="card">
 <h2>小解情的生活档案</h2>
-<p class="muted">按日期查看生活记录。没有打开游戏的日子不会虚构记录。</p>
+<p class="note">按日期查看生活事件、身体状态和当天购物。</p>
 <input id="archiveDate" type="date">
-<div id="archiveView" style="margin-top:12px"></div>
+<div id="archiveView"></div>
 </div>
 <div class="card">
-<h2>备份</h2>
-<p class="muted">导出 JSON 存档，换手机时可以导入。API 密钥不会包含在备份里。</p>
+<h2>存档备份</h2>
+<p class="note">导出 JSON 文件，换手机时可以导入。API 密钥不包含在备份中。</p>
+<div class="row">
 <button id="export">导出备份</button>
 <button id="import">导入备份</button>
-<input id="file" type="file" accept=".json" class="hide">
+</div>
+<input id="file" type="file" accept=".json,application/json" class="hidden">
 </div>
 </section>
 
-<section id="page-settings" class="hide">
+<section id="page-settings" class="page hidden">
 <div class="card">
 <h2>Gemini AI 聊天设置</h2>
-<p class="muted">使用 Google Gemini API，需要联网。</p>
-<p><a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">Google AI Studio API 密钥</a></p>
+<p class="note">使用 Google Gemini API，需要联网。模型及额度以 Google 为准。</p>
+<p><a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">Google AI Studio · API 密钥</a></p>
 <input id="apiKey" type="password" placeholder="Gemini API 密钥">
-<p class="muted">
-<label><input type="checkbox" id="remember"> 在本机记住密钥</label>
-</p>
-<p class="muted">不勾选时只保存在当前浏览器会话。请勿将 API 密钥直接写入公开 GitHub 代码。</p>
+<p><label><input id="remember" type="checkbox"> 在本机记住密钥</label></p>
+<p class="note">不勾选时只保存在当前浏览器会话。请勿将密钥写进公开的 GitHub 代码。</p>
 <div class="row">
-<button class="primary" id="saveApi">保存设置</button>
+<button id="saveApi" class="primary">保存设置</button>
 <button id="clearApi">清除密钥</button>
 </div>
 <p id="keyMessage" class="muted"></p>
@@ -184,23 +182,23 @@ dialog::backdrop{background:#0006}
 <dialog id="payDialog">
 <h2>选择付款方式</h2>
 <p id="payDescription"></p>
-<label style="display:block;margin:12px 0">
+<label class="choice">
 <input type="radio" name="payMethod" value="wallet">
 从小解情的钱包扣款
 </label>
-<label style="display:block;margin:12px 0">
+<label class="choice">
 <input type="radio" name="payMethod" value="own">
-使用自己的钱购买
+使用自己的钱（不扣钱包）
 </label>
-<p class="muted" id="payWalletInfo"></p>
+<p id="payWalletInfo" class="note"></p>
 <div class="row">
 <button id="payCancel">取消</button>
-<button class="primary" id="payConfirm">确认购买</button>
+<button id="payConfirm" class="primary">确认购买</button>
 </div>
 </dialog>
 
 <nav>
-<button class="on" data-tab="home">日常</button>
+<button class="active" data-tab="home">日常</button>
 <button data-tab="chat">聊天</button>
 <button data-tab="shop">商店</button>
 <button data-tab="records">记录</button>
@@ -210,7 +208,7 @@ dialog::backdrop{background:#0006}
 <script>
 "use strict";
 
-const $=id=>document.getElementById(id);
+const el=id=>document.getElementById(id);
 const won=n=>"₩"+Number(n||0).toLocaleString("ko-KR");
 const clamp=n=>Math.max(0,Math.min(100,n));
 const SAVE="little_xieqing_web_v1";
@@ -295,22 +293,27 @@ const products=base.map(
 ([cat,name,price,kind])=>({cat,name,price,kind})
 );
 
-const variations=[
+const variants=[
 "迷你","小份","经典","可爱",
 "彩色","特别","限定","日常"
 ];
 
 const expandable=base.filter(
-x=>!["数码大件","药品"].includes(x[0])
+b=>!["数码大件","药品"].includes(b[0])
 );
 
-let ix=0;
+let productIndex=0;
 
 while(products.length<301){
-const b=expandable[ix%expandable.length];
-const variant=variations[
-Math.floor(ix/expandable.length)%variations.length
+const b=expandable[
+productIndex%expandable.length
 ];
+
+const variant=variants[
+Math.floor(productIndex/expandable.length)%
+variants.length
+];
+
 const name=variant+b[1];
 
 if(!products.some(p=>p.name===name)){
@@ -319,12 +322,12 @@ cat:b[0],
 name,
 price:Math.min(
 15000,
-Math.max(1000,b[2]+(ix%3-1)*500)
+Math.max(1000,b[2]+(productIndex%3-1)*500)
 ),
 kind:b[3]
 });
 }
-ix++;
+productIndex++;
 }
 
 function fresh(){
@@ -356,75 +359,92 @@ archive:{}
 };
 }
 
-function normalize(data){
-const defaults=fresh();
-
-return {
-...defaults,
-...data,
+function normalize(obj){
+const initial=fresh();
+const result={
+...initial,
+...obj,
 stats:{
-...defaults.stats,
-...(data.stats||{})
-},
-logs:Array.isArray(data.logs)?data.logs:[],
-chat:Array.isArray(data.chat)?data.chat:defaults.chat,
-walletHistory:Array.isArray(data.walletHistory)?
-data.walletHistory:[],
-archive:data.archive&&typeof data.archive==="object"?
-data.archive:{},
-wallet:Number.isFinite(Number(data.wallet))?
-Math.max(0,Number(data.wallet)):0
+...initial.stats,
+...(obj.stats||{})
+}
 };
+
+if(!Array.isArray(result.logs))result.logs=[];
+if(!Array.isArray(result.walletHistory)){
+result.walletHistory=[];
+}
+if(!Array.isArray(result.chat)){
+result.chat=initial.chat;
+}
+if(
+!result.archive||
+typeof result.archive!=="object"||
+Array.isArray(result.archive)
+){
+result.archive={};
 }
 
-let s=fresh();
+result.wallet=Number.isFinite(Number(result.wallet))?
+Math.max(0,Number(result.wallet)):0;
+
+result.saved=Number.isFinite(Number(result.saved))?
+Number(result.saved):0;
+
+result.goal=Number(result.goal)>0?
+Number(result.goal):500000;
+
+return result;
+}
+
+let state=fresh();
 
 try{
-const stored=JSON.parse(
+const old=JSON.parse(
 localStorage.getItem(SAVE)||"null"
 );
-if(stored)s=normalize(stored);
+if(old)state=normalize(old);
 }catch(e){
-console.warn("存档读取失败",e);
+console.warn("读取存档失败",e);
 }
 
-let tab="home";
-let cat="全部";
-let search="";
-let limit=30;
-let busy=false;
+let currentTab="home";
+let currentCategory="全部";
+let searchText="";
+let showLimit=30;
+let chatBusy=false;
 let pendingPurchase=null;
 
 function archiveEntry(day){
-if(!s.archive[day]){
-s.archive[day]={events:[]};
+if(!state.archive[day]){
+state.archive[day]={events:[]};
 }
-return s.archive[day];
+return state.archive[day];
 }
 
 function snapshot(day=localDay(),when=new Date()){
-const a=archiveEntry(day);
+const entry=archiveEntry(day);
 
-a.snapshot={
-stats:{...s.stats},
-ill:!!s.ill,
-sleeping:!!s.sleeping,
-meals:s.meals,
-drinks:s.drinks,
+entry.snapshot={
+stats:{...state.stats},
+ill:!!state.ill,
+sleeping:!!state.sleeping,
+meals:state.meals,
+drinks:state.drinks,
 at:localTime(when)
 };
 }
 
-function eventLog(message,at=new Date()){
-const a=archiveEntry(localDay(at));
+function eventLog(text,at=new Date()){
+const entry=archiveEntry(localDay(at));
 
-if(!Array.isArray(a.events)){
-a.events=[];
+if(!Array.isArray(entry.events)){
+entry.events=[];
 }
 
-a.events.push({
+entry.events.push({
 at:localTime(at),
-text:message
+text
 });
 
 snapshot(localDay(at),at);
@@ -433,7 +453,10 @@ snapshot(localDay(at),at);
 function persist(){
 try{
 snapshot();
-localStorage.setItem(SAVE,JSON.stringify(s));
+localStorage.setItem(
+SAVE,
+JSON.stringify(state)
+);
 }catch(e){
 console.warn("保存失败",e);
 }
@@ -441,67 +464,77 @@ console.warn("保存失败",e);
 
 function tick(){
 const now=new Date();
-const day=localDay(now);
+const today=localDay(now);
 const hour=now.getHours();
 
-const hours=Math.max(
+const elapsed=Math.max(
 0,
 Math.min(
 24,
-(Date.now()-(s.last||Date.now()))/3600000
+(Date.now()-(Number(state.last)||Date.now()))/
+3600000
 )
 );
 
-s.last=Date.now();
+state.last=Date.now();
 
-if(s.day!==day){
-const first=!s.day;
-s.day=day;
-s.meals=0;
-s.drinks=0;
+if(state.day!==today){
+const first=!state.day;
+
+state.day=today;
+state.meals=0;
+state.drinks=0;
 
 if(!first){
-s.stats.food=40;
-s.stats.water=45;
-s.stats.energy=Math.max(75,s.stats.energy);
+state.stats.food=40;
+state.stats.water=45;
+state.stats.energy=Math.max(
+75,state.stats.energy
+);
 
 if(Math.random()<0.08){
-s.ill=true;
-s.speech="今天好像有点不舒服……";
+state.ill=true;
+state.speech="今天好像有点不舒服……";
 eventLog("发现身体不舒服");
-}else if(s.ill&&Math.random()<0.4){
-s.ill=false;
+}else if(state.ill&&Math.random()<0.4){
+state.ill=false;
 eventLog("身体恢复健康");
 }
 }
 }
 
-s.stats.food=clamp(s.stats.food-hours*.65);
-s.stats.water=clamp(s.stats.water-hours*.9);
+state.stats.food=clamp(
+state.stats.food-elapsed*0.65
+);
 
-s.stats.energy=clamp(
-s.stats.energy+(s.sleeping?hours*7:-hours*.5)
+state.stats.water=clamp(
+state.stats.water-elapsed*0.9
+);
+
+state.stats.energy=clamp(
+state.stats.energy+
+(state.sleeping?elapsed*7:-elapsed*0.5)
 );
 
 if(
 (hour>=22||hour<6)&&
-!s.sleeping&&
-s.sleepNight!==day
+!state.sleeping&&
+state.sleepNight!==today
 ){
-s.sleeping=true;
-s.speech="晚安，我先睡啦。";
+state.sleeping=true;
+state.speech="晚安，我先睡啦。";
 eventLog("自动进入睡眠状态");
 }
 
 if(
 hour>=7&&hour<22&&
-s.sleeping&&
-s.sleepNight!==day
+state.sleeping&&
+state.sleepNight!==today
 ){
-s.sleeping=false;
-s.sleepNight=day;
-s.stats.energy=100;
-s.speech="早上好！我醒啦！";
+state.sleeping=false;
+state.sleepNight=today;
+state.stats.energy=100;
+state.speech="早上好！我醒啦！";
 eventLog("醒来了");
 }
 
@@ -509,74 +542,65 @@ persist();
 }
 
 function showTab(name){
-tab=name;
+const page=el("page-"+name);
+if(!page)return;
 
-document.querySelectorAll(
-"main > section"
-).forEach(section=>{
-section.classList.toggle(
-"hide",
-section.id!=="page-"+name
-);
+currentTab=name;
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.toggle("hidden",p!==page);
 });
 
 document.querySelectorAll(
-"nav button"
-).forEach(button=>{
-button.classList.toggle(
-"on",
-button.dataset.tab===name
+"nav [data-tab]"
+).forEach(b=>{
+b.classList.toggle(
+"active",
+b.dataset.tab===name
 );
 });
 
 render();
+window.scrollTo(0,0);
 }
 
 function render(){
-if(tab==="home")home();
-if(tab==="chat")chatRender();
-if(tab==="shop")shopRender();
-if(tab==="records")recordRender();
+if(currentTab==="home")renderHome();
+else if(currentTab==="chat")renderChat();
+else if(currentTab==="shop")renderShop();
+else if(currentTab==="records")renderRecords();
 }
 
-document.querySelectorAll(
-"nav button"
-).forEach(button=>{
-button.addEventListener(
-"click",
-()=>showTab(button.dataset.tab)
-);
-});
-
-function makeButton(p){
+function purchaseButton(p){
 const b=document.createElement("button");
 b.textContent=p.name+" "+won(p.price);
-b.onclick=()=>buy(p);
+b.onclick=()=>beginPurchase(p);
 return b;
 }
 
-function home(){
+function renderHome(){
 tick();
 
-$("health").textContent=
-s.ill?"有点生病":
-s.stats.mood>60?"心情不错":"有点无聊";
+el("health").textContent=
+state.ill?"有点生病":
+state.stats.mood>60?"心情不错":"有点无聊";
 
-$("speech").textContent=s.speech;
-$("sleepState").textContent=
-s.sleeping?"正在睡觉":"醒着";
+el("speech").textContent=state.speech;
 
-$("sleepBtn").textContent=
-s.sleeping?"叫醒他":"让他睡觉";
+el("sleepState").textContent=
+state.sleeping?"正在睡觉":"醒着";
 
-$("homeSaved").textContent=won(s.saved);
-$("homeWallet").textContent=won(s.wallet);
+el("sleepBtn").textContent=
+state.sleeping?"叫醒他":"让他睡觉";
 
-$("daily").textContent=
-"今天吃饭 "+s.meals+
-" 次 · 喝水 "+s.drinks+" 次";
+el("homeSaved").textContent=won(state.saved);
+el("homeWallet").textContent=won(state.wallet);
 
-$("stats").replaceChildren();
+el("daily").textContent=
+`今天吃饭 ${state.meals} 次 · 喝水 ${state.drinks} 次`;
+
+const root=el("stats");
+root.replaceChildren();
 
 for(const [key,name] of Object.entries({
 food:"饱腹",
@@ -584,83 +608,58 @@ water:"水分",
 energy:"精力",
 mood:"心情"
 })){
-const div=document.createElement("div");
-div.className="stat";
+const d=document.createElement("div");
+d.className="stat";
 
-const label=document.createElement("div");
-label.className="row";
+const header=document.createElement("div");
+header.className="row";
 
-const left=document.createElement("span");
-left.textContent=name;
+const a=document.createElement("span");
+const b=document.createElement("span");
 
-const right=document.createElement("span");
-right.textContent=Math.round(s.stats[key])+"%";
+a.textContent=name;
+b.textContent=Math.round(state.stats[key])+"%";
 
-label.append(left,right);
+header.append(a,b);
 
 const bar=document.createElement("div");
 bar.className="bar";
 
 const fill=document.createElement("div");
 fill.className="fill";
-fill.style.width=clamp(s.stats[key])+"%";
+fill.style.width=clamp(state.stats[key])+"%";
 
 bar.append(fill);
-div.append(label,bar);
-$("stats").append(div);
+d.append(header,bar);
+root.append(d);
 }
 
-$("quick").replaceChildren(
-...products.slice(0,8).map(makeButton)
+el("quick").replaceChildren(
+...products.slice(0,8).map(purchaseButton)
 );
 }
 
-$("sleepBtn").onclick=()=>{
-s.sleeping=!s.sleeping;
-
-if(!s.sleeping){
-s.sleepNight=localDay();
-s.stats.energy=100;
-}
-
-s.speech=s.sleeping?
-"晚安，明天见！":
-"醒啦！你找我吗？";
-
-eventLog(s.sleeping?"主动睡觉":"被叫醒了");
-persist();
-home();
-};
-
-function buy(p){
+function beginPurchase(p){
 pendingPurchase=p;
 
-$("payDescription").textContent=
+el("payDescription").textContent=
 p.name+" · "+won(p.price);
 
-$("payWalletInfo").textContent=
-"当前钱包余额："+won(s.wallet)+
-"。余额不足仍可选择使用自己的钱。";
+el("payWalletInfo").textContent=
+"当前钱包余额："+won(state.wallet)+
+"。余额不足仍可选择自己的钱购买。";
 
-const canWallet=s.wallet>=p.price;
-
-document.querySelector(
-'input[name="payMethod"][value="wallet"]'
-).checked=canWallet;
+const method=state.wallet>=p.price?
+"wallet":"own";
 
 document.querySelector(
-'input[name="payMethod"][value="own"]'
-).checked=!canWallet;
+`input[name="payMethod"][value="${method}"]`
+).checked=true;
 
-$("payDialog").showModal();
+el("payDialog").showModal();
 }
 
-$("payCancel").onclick=()=>{
-pendingPurchase=null;
-$("payDialog").close();
-};
-
-$("payConfirm").onclick=()=>{
+function finishPurchase(){
 const p=pendingPurchase;
 if(!p)return;
 
@@ -672,7 +671,7 @@ if(!selected)return;
 
 const method=selected.value;
 
-if(method==="wallet"&&s.wallet<p.price){
+if(method==="wallet"&&state.wallet<p.price){
 alert("钱包余额不足，请选择自己的钱或先充值。");
 return;
 }
@@ -680,438 +679,335 @@ return;
 if(
 method==="own"&&
 !confirm(
-"确认这次使用自己的钱购买 "+
-won(p.price)+
-"？\n游戏只会记录，不会自动转账。"
+"请确认你会用自己的钱另行支付或存入 "+
+won(p.price)+"。继续记录购买？"
 )
 ){
 return;
 }
 
-const now=new Date().toISOString();
+const date=new Date().toISOString();
 
 if(method==="wallet"){
-s.wallet-=p.price;
+state.wallet-=p.price;
 
-s.walletHistory.unshift({
+state.walletHistory.unshift({
 type:"purchase",
 amount:-p.price,
 name:p.name,
-date:now
+date
 });
 }
 
-s.saved+=p.price;
+state.saved+=p.price;
 
-s.logs.unshift({
+state.logs.unshift({
 name:p.name,
 price:p.price,
 cat:p.cat,
-date:now,
+date,
 payment:method
 });
 
 if(p.kind==="food"){
-s.stats.food=clamp(s.stats.food+35);
-s.meals++;
+state.stats.food=clamp(state.stats.food+35);
+state.meals++;
 }
 
 if(p.kind==="water"){
-s.stats.water=clamp(s.stats.water+35);
-s.drinks++;
+state.stats.water=clamp(state.stats.water+35);
+state.drinks++;
 }
 
 if(p.kind==="item"||p.kind==="mood"){
-s.stats.mood=clamp(s.stats.mood+8);
+state.stats.mood=clamp(state.stats.mood+8);
 }
 
 if(p.kind==="medicine"){
-s.ill=false;
+state.ill=false;
 }
 
 const action=
 p.kind==="food"?"吃了":
 p.kind==="water"?"喝了":
-p.kind==="medicine"?"使用了":
+p.kind==="medicine"?"使用药品":
 "购买了";
 
-eventLog(action+p.name);
+eventLog(
+action+p.name+
+(p.kind==="medicine"?"，身体恢复健康":"")
+);
 
-s.speech="是"+p.name+"！谢谢你，我喜欢这个！";
+state.speech=
+"是"+p.name+"！谢谢你，我喜欢这个！";
 
 pendingPurchase=null;
-$("payDialog").close();
+el("payDialog").close();
 
 persist();
 render();
 
 alert("已购买 "+p.name+" · "+won(p.price));
-};
+}
 
-function shopRender(){
+function renderShop(){
 const categories=[
 "全部",
 ...new Set(products.map(p=>p.cat))
 ];
 
-$("filters").replaceChildren(
+el("filters").replaceChildren(
 ...categories.map(c=>{
 const b=document.createElement("button");
+
 b.textContent=c;
-b.className=c===cat?"on":"";
+b.className=c===currentCategory?"active":"";
 
 b.onclick=()=>{
-cat=c;
-limit=30;
-shopRender();
+currentCategory=c;
+showLimit=30;
+renderShop();
 };
 
 return b;
 })
 );
 
-const matches=products.filter(p=>
-(cat==="全部"||p.cat===cat)&&
-(!search||p.name.includes(search))
+const filtered=products.filter(p=>
+(currentCategory==="全部"||
+p.cat===currentCategory)&&
+(!searchText||p.name.includes(searchText))
 );
 
-$("products").replaceChildren(
-...matches.slice(0,limit).map(p=>{
-const d=document.createElement("div");
-d.className="item";
+el("products").replaceChildren(
+...filtered.slice(0,showLimit).map(p=>{
+const row=document.createElement("div");
+row.className="item";
 
-const t=document.createElement("span");
-t.textContent=p.name+" · "+p.cat;
+const label=document.createElement("span");
+label.textContent=p.name+" · "+p.cat;
 
 const b=document.createElement("button");
 b.textContent=won(p.price);
-b.onclick=()=>buy(p);
+b.onclick=()=>beginPurchase(p);
 
-d.append(t,b);
+row.append(label,b);
+return row;
+})
+);
+
+el("more").classList.toggle(
+"hidden",
+filtered.length<=showLimit
+);
+}
+
+function renderChat(){
+el("aiStatus").textContent=
+getKey()?
+"AI 已配置，聊天需要联网。":
+"请先到 AI设置填写 Gemini API 密钥。";
+
+el("messages").replaceChildren(
+...state.chat.slice(-80).map(m=>{
+const d=document.createElement("div");
+d.className="msg"+(m.who==="me"?" me":"");
+d.textContent=m.text;
 return d;
 })
 );
 
-$("more").style.display=
-matches.length>limit?"block":"none";
+el("messages").scrollTop=
+el("messages").scrollHeight;
 }
 
-$("search").oninput=e=>{
-search=e.target.value;
-limit=30;
-shopRender();
-};
-
-$("more").onclick=()=>{
-limit+=30;
-shopRender();
-};
-
-$("customBuy").onclick=()=>{
-const name=$("customName").value.trim();
-const price=Number($("customPrice").value);
-
-if(
-!name||
-!Number.isSafeInteger(price)||
-price<=0
-){
-alert("请填写商品名称和有效价格");
-return;
-}
-
-buy({
-name,
-price,
-cat:$("customCat").value,
-kind:$("customKind").value
-});
-};
-
-$("topupBtn").onclick=()=>{
-const amount=Number($("topupAmount").value);
-
-if(
-!Number.isSafeInteger(amount)||
-amount<=0
-){
-alert("请输入有效的正整数金额");
-return;
-}
-
-if(!confirm(
-"确认已经在现实中预留或转入 "+
-won(amount)+
-"？\n这笔充值不会计入累计储蓄。"
-)){
-return;
-}
-
-s.wallet+=amount;
-
-s.walletHistory.unshift({
-type:"topup",
-amount,
-name:"钱包充值",
-date:new Date().toISOString()
-});
-
-$("topupAmount").value="";
-
-persist();
-recordRender();
-};
-
-$("goalBtn").onclick=()=>{
-const n=Number($("goalInput").value);
-
-if(Number.isSafeInteger(n)&&n>0){
-s.goal=n;
-persist();
-recordRender();
-}else{
-alert("请输入有效的目标金额");
-}
-};
-
-function addLine(parent,left,right){
-const d=document.createElement("div");
-d.className="item";
+function line(container,left,right){
+const row=document.createElement("div");
+row.className="item";
 
 const a=document.createElement("span");
-a.textContent=left;
-
 const b=document.createElement("span");
+
+a.textContent=left;
 b.textContent=right;
 
-d.append(a,b);
-parent.append(d);
+row.append(a,b);
+container.append(row);
 }
 
-function addHeading(parent,text){
-const h=document.createElement("h3");
-h.textContent=text;
-parent.append(h);
-}
-
-function addNote(parent,text){
-const p=document.createElement("p");
-p.className="muted";
-p.textContent=text;
-parent.append(p);
-}
-
-function archiveRender(){
-const picker=$("archiveDate");
+function renderArchive(){
+const picker=el("archiveDate");
 
 if(!picker.value){
 picker.value=localDay();
 }
 
 const day=picker.value;
-const a=s.archive[day];
-const view=$("archiveView");
+const archive=state.archive[day];
+const snap=archive&&archive.snapshot;
 
+const purchases=state.logs.filter(x=>
+x.date&&
+!isNaN(new Date(x.date).getTime())&&
+localDay(new Date(x.date))===day
+);
+
+const view=el("archiveView");
 view.replaceChildren();
 
-addHeading(view,"身体状态");
+const heading=document.createElement("h3");
+heading.textContent="身体状态";
+view.append(heading);
 
-if(a&&a.snapshot){
-const snap=a.snapshot;
-const st=snap.stats||{};
+if(snap){
+line(view,"记录时间",snap.at||"未知");
 
-addLine(view,"记录时间",snap.at||"未知");
-
-for(const [key,name] of Object.entries({
+for(const [key,label] of Object.entries({
 food:"饱腹",
 water:"水分",
 energy:"精力",
 mood:"心情"
 })){
-addLine(
+line(
 view,
-name,
-st[key]===undefined?
-"未记录":
-Math.round(st[key])+"%"
+label,
+snap.stats&&snap.stats[key]!==undefined?
+Math.round(snap.stats[key])+"%":
+"未记录"
 );
 }
 
-addLine(view,"健康",snap.ill?"生病":"健康");
-addLine(
+line(view,"健康",snap.ill?"生病":"健康");
+
+line(
 view,
 "作息",
 snap.sleeping?"睡觉中":"醒着"
 );
 
-addLine(
+line(
 view,
 "吃饭 / 喝水次数",
 `${snap.meals??"?"} / ${snap.drinks??"?"}`
 );
 
 }else{
-addNote(view,"这一天没有保存身体状态快照。");
+const p=document.createElement("p");
+p.className="muted";
+p.textContent="这一天没有保存身体状态快照。";
+view.append(p);
 }
 
-addHeading(view,"生活事件");
+const h=document.createElement("h3");
+h.textContent="生活事件";
+view.append(h);
 
-const events=a&&Array.isArray(a.events)?
-a.events:[];
+const events=Array.isArray(archive&&archive.events)?
+archive.events:[];
 
 if(events.length){
-for(const e of events){
-addLine(view,e.at||"--:--",e.text||"");
-}
-}else{
-addNote(view,"没有单独记录的生活事件。");
-}
-
-addHeading(view,"当天购物与储蓄");
-
-const purchases=s.logs.filter(x=>
-x.date&&
-!Number.isNaN(new Date(x.date).getTime())&&
-localDay(new Date(x.date))===day
+events.forEach(e=>
+line(view,e.at||"--:--",e.text||"")
 );
+}else{
+const p=document.createElement("p");
+p.className="muted";
+p.textContent="没有单独记录的生活事件。";
+view.append(p);
+}
 
-const total=purchases.reduce(
+const h2=document.createElement("h3");
+h2.textContent="当天购物与储蓄";
+view.append(h2);
+
+line(
+view,
+"当天累计购买",
+won(purchases.reduce(
 (sum,x)=>sum+(Number(x.price)||0),
 0
+))
 );
 
-addLine(view,"当天累计购买",won(total));
-
-for(const x of purchases){
-const payment=
+if(purchases.length){
+purchases.forEach(x=>{
+const method=
 x.payment==="wallet"?"钱包":
 x.payment==="own"?"自己的钱":
 "旧记录";
 
-addLine(
+line(
 view,
-x.name+" · "+payment,
+x.name+" · "+method,
 won(x.price)
 );
+});
+}else{
+const p=document.createElement("p");
+p.className="muted";
+p.textContent="没有购物记录。";
+view.append(p);
+}
 }
 
-if(!purchases.length){
-addNote(view,"没有购物记录。");
-}
-}
+function renderRecords(){
+el("walletBalance").textContent=won(state.wallet);
+el("recordSaved").textContent=won(state.saved);
 
-$("archiveDate").onchange=archiveRender;
-
-function recordRender(){
-$("walletBalance").textContent=won(s.wallet);
-$("recordSaved").textContent=won(s.saved);
-
-$("goalText").textContent=
-"目标 "+won(s.goal)+
-" · 已完成 "+
+el("goalText").textContent=
+`目标 ${won(state.goal)} · 已完成 ${
 Math.min(
 100,
-Math.round(s.saved/s.goal*100)
-)+"%";
+Math.round(state.saved/state.goal*100)
+)
+}%`;
 
-const history=$("walletHistory");
-history.replaceChildren();
+const wh=el("walletHistory");
+wh.replaceChildren();
 
-if(!s.walletHistory.length){
-addNote(history,"还没有钱包流水。");
+if(!state.walletHistory.length){
+const p=document.createElement("p");
+p.className="muted";
+p.textContent="还没有钱包流水。";
+wh.append(p);
 }
 
-for(const x of s.walletHistory.slice(0,100)){
-const amount=Number(x.amount)||0;
-
-addLine(
-history,
-(x.date?localDay(new Date(x.date))+" · ":"")+
+state.walletHistory.slice(0,100).forEach(x=>{
+line(
+wh,
+(x.date?
+localDay(new Date(x.date))+" · ":"")+
 (x.type==="topup"?"充值":"购买 "+x.name),
-(amount>=0?"+":"−")+won(Math.abs(amount))
+(Number(x.amount)>=0?"+":"−")+
+won(Math.abs(x.amount))
 );
-}
+});
 
-const logs=$("logs");
+const logs=el("logs");
 logs.replaceChildren();
 
-if(!s.logs.length){
-addNote(logs,"还没有购买记录。");
+if(!state.logs.length){
+const p=document.createElement("p");
+p.className="muted";
+p.textContent="还没有购买记录。";
+logs.append(p);
 }
 
-for(const x of s.logs.slice(0,80)){
-const payment=
+state.logs.slice(0,80).forEach(x=>{
+const method=
 x.payment==="wallet"?"钱包":
 x.payment==="own"?"自己的钱":
 "旧记录";
 
-addLine(
+line(
 logs,
-x.name+" · "+payment,
+x.name+" · "+method,
 won(x.price)
 );
+});
+
+renderArchive();
 }
-
-archiveRender();
-}
-
-$("export").onclick=()=>{
-const blob=new Blob(
-[
-JSON.stringify({
-app:"小解情的日常",
-version:15,
-data:s
-},null,2)
-],
-{type:"application/json"}
-);
-
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-
-a.href=url;
-a.download="xieqing_backup.json";
-
-document.body.append(a);
-a.click();
-a.remove();
-
-setTimeout(()=>URL.revokeObjectURL(url),3000);
-};
-
-$("import").onclick=()=>{
-$("file").click();
-};
-
-$("file").onchange=async e=>{
-const file=e.target.files?.[0];
-if(!file)return;
-
-try{
-const obj=JSON.parse(await file.text());
-
-if(
-!obj.data||
-!Array.isArray(obj.data.logs)
-){
-throw Error("不是有效的存档文件");
-}
-
-if(confirm("导入会覆盖当前游戏记录，确定继续？")){
-s=normalize(obj.data);
-$("archiveDate").value=localDay();
-persist();
-render();
-alert("存档恢复成功");
-}
-
-}catch(err){
-alert("导入失败："+err.message);
-}finally{
-e.target.value="";
-}
-};
 
 function getKey(){
 try{
@@ -1123,147 +1019,74 @@ return "";
 }
 }
 
-$("saveApi").onclick=()=>{
-const key=$("apiKey").value.trim();
-
-if(!key){
-$("keyMessage").textContent="请填写密钥。";
-return;
+/* Gemini 模型自动查询 */
+async function listGeminiModels(key){
+const response=await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models?pageSize=100",
+{
+headers:{"x-goog-api-key":key}
 }
-
-try{
-localStorage.removeItem(API);
-sessionStorage.removeItem(API);
-
-const storage=$("remember").checked?
-localStorage:sessionStorage;
-
-storage.setItem(API,key);
-
-$("keyMessage").textContent="设置已保存。";
-
-}catch{
-$("keyMessage").textContent=
-"浏览器无法保存密钥。";
-}
-};
-
-$("clearApi").onclick=()=>{
-try{
-localStorage.removeItem(API);
-sessionStorage.removeItem(API);
-}catch{}
-
-$("apiKey").value="";
-$("keyMessage").textContent="密钥已清除。";
-};
-
-try{
-$("apiKey").value=getKey();
-$("remember").checked=!!localStorage.getItem(API);
-}catch{}
-
-function chatRender(){
-$("aiStatus").textContent=
-getKey()?
-"AI 已配置，聊天需要联网。":
-"请先到 AI设置填写 Gemini API 密钥。";
-
-$("messages").replaceChildren(
-...s.chat.slice(-80).map(m=>{
-const d=document.createElement("div");
-
-d.className="msg"+(
-m.who==="me"?" me":""
 );
 
-d.textContent=m.text;
-return d;
-})
+const data=await response.json()
+.catch(()=>({}));
+
+if(!response.ok){
+throw Error(
+data.error?.message||
+"读取模型列表失败（HTTP "+response.status+"）"
+);
+}
+
+const available=(data.models||[]).filter(m=>
+m.name&&
+Array.isArray(m.supportedGenerationMethods)&&
+m.supportedGenerationMethods.includes(
+"generateContent"
+)&&
+/gemini/i.test(m.name)&&
+!/embedding|image|tts|audio|robotics|computer-use|live/i.test(m.name)
 );
 
-$("messages").scrollTop=
-$("messages").scrollHeight;
+const rank=m=>{
+const n=m.name.toLowerCase();
+
+if(/flash-lite/.test(n))return 1;
+if(/flash/.test(n))return 0;
+if(/pro/.test(n))return 3;
+
+return 2;
+};
+
+available.sort(
+(a,b)=>rank(a)-rank(b)||
+b.name.localeCompare(
+a.name,
+undefined,
+{numeric:true}
+)
+);
+
+return [
+...new Set(available.map(m=>m.name))
+];
 }
 
-async function sendChat(){
-if(busy)return;
-
-const text=$("chatInput").value.trim();
-if(!text)return;
-
-const key=getKey();
-
-if(!key){
-showTab("settings");
-$("keyMessage").textContent=
-"请先填写 API 密钥。";
-return;
-}
-
-busy=true;
-$("send").disabled=true;
-$("send").textContent="思考中";
-$("chatInput").value="";
-
-s.chat.push({
-who:"me",
-text
-});
-
-persist();
-chatRender();
-
-const now=new Date();
-
-const system=`
-你是小解情，一个生活在现代世界的小娃娃，
-不是成年人。
-
-性格活泼、聪明、有点调皮，但不刻意撒娇。
-自然地使用简体中文。
-通常回答1到3句话。
-
-认真回答问题，记住上下文，
-能回应问候和追问。
-
-当前本地日期：${localDay(now)}
-当前本地时间：${localTime(now)}
-今天星期：${["日","一","二","三","四","五","六"][now.getDay()]}
-
-你的游戏状态：
-${JSON.stringify({
-睡觉:s.sleeping,
-生病:s.ill,
-饱腹:s.stats.food,
-水分:s.stats.water,
-精力:s.stats.energy,
-心情:s.stats.mood,
-今天吃饭:s.meals,
-今天喝水:s.drinks,
-钱包余额:s.wallet,
-累计购买金额:s.saved,
-最近购买:s.logs.slice(0,5).map(x=>x.name)
-})}
-
-不要虚构已经发生的购物或转账。
-钱包余额不等于累计储蓄。
-`;
-
-const history=s.chat
-.filter(m=>!m.text.startsWith("（AI 连接失败"))
-.slice(-20);
-
+/* 使用指定模型发送消息 */
+async function generateWithModel(
+key,model,system,history
+){
 const controller=new AbortController();
 
 const timer=setTimeout(
 ()=>controller.abort(),
-90000
+45000
 );
 
 try{
 const response=await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+"https://generativelanguage.googleapis.com/v1beta/"+
+model+":generateContent",
 {
 method:"POST",
 headers:{
@@ -1291,10 +1114,13 @@ const result=await response.json()
 .catch(()=>({}));
 
 if(!response.ok){
-throw Error(
+const error=Error(
 result.error?.message||
 "HTTP "+response.status
 );
+
+error.status=response.status;
+throw error;
 }
 
 const reply=(
@@ -1305,46 +1131,395 @@ if(!reply){
 throw Error("AI 没有返回内容");
 }
 
-s.chat.push({
+return reply;
+
+}finally{
+clearTimeout(timer);
+}
+}
+
+/* 聊天失败时自动尝试备用模型 */
+async function sendChat(){
+if(chatBusy)return;
+
+const text=el("chatInput").value.trim();
+if(!text)return;
+
+const key=getKey();
+
+if(!key){
+showTab("settings");
+el("keyMessage").textContent=
+"请先填写 API 密钥。";
+return;
+}
+
+chatBusy=true;
+el("send").disabled=true;
+el("send").textContent="思考中";
+el("chatInput").value="";
+
+state.chat.push({
+who:"me",
+text
+});
+
+persist();
+renderChat();
+
+const now=new Date();
+
+const system=`
+你是小解情，一个生活在现代世界的小娃娃，
+不是成年人。
+
+性格活泼、聪明、有点调皮，但不刻意撒娇。
+自然使用简体中文，通常回答1到3句话。
+认真回应问题，结合聊天上下文。
+
+当前日期：${localDay(now)}
+当前时间：${localTime(now)}
+星期${["日","一","二","三","四","五","六"][now.getDay()]}
+
+当前状态：
+${JSON.stringify({
+睡觉:state.sleeping,
+生病:state.ill,
+饱腹:state.stats.food,
+水分:state.stats.water,
+精力:state.stats.energy,
+心情:state.stats.mood,
+钱包余额:state.wallet,
+累计购买金额:state.saved,
+最近购买:state.logs.slice(0,5).map(x=>x.name)
+})}
+
+不要虚构已发生的购物、存款或转账。
+钱包余额不等于累计储蓄。
+`;
+
+const history=state.chat.filter(m=>
+!m.text.startsWith("（AI 连接失败")
+).slice(-20);
+
+try{
+const models=await listGeminiModels(key);
+
+if(!models.length){
+throw Error(
+"此 API 密钥没有可用于文字聊天的 Gemini 模型"
+);
+}
+
+let lastError=null;
+let reply="";
+
+for(const model of models.slice(0,4)){
+try{
+reply=await generateWithModel(
+key,model,system,history
+);
+break;
+
+}catch(e){
+lastError=e;
+
+const retryable=
+e.name==="AbortError"||
+[429,500,502,503,504].includes(e.status)||
+/high demand|overloaded|unavailable/i.test(
+e.message
+);
+
+if(!retryable)throw e;
+}
+}
+
+if(!reply){
+throw lastError||
+Error("暂时没有可用模型");
+}
+
+state.chat.push({
 who:"jq",
 text:reply
 });
 
-s.speech=reply;
-s.stats.mood=clamp(s.stats.mood+1);
+state.speech=reply;
+state.stats.mood=clamp(
+state.stats.mood+1
+);
 
 }catch(e){
-s.chat.push({
+state.chat.push({
 who:"jq",
-text:
-"（AI 连接失败："+(
+text:"（AI 连接失败："+(
 e.name==="AbortError"?
 "请求超时":
 e.message
 )+"。请稍后重试。）"
 });
+
 }finally{
-clearTimeout(timer);
+chatBusy=false;
+el("send").disabled=false;
+el("send").textContent="发送";
 
-busy=false;
-$("send").disabled=false;
-$("send").textContent="发送";
-
-s.chat=s.chat.slice(-200);
+state.chat=state.chat.slice(-200);
 
 persist();
-chatRender();
+renderChat();
 }
 }
 
-$("send").onclick=sendChat;
+function attachEvents(){
+document.querySelectorAll(
+"nav [data-tab]"
+).forEach(b=>{
+b.addEventListener(
+"click",
+()=>showTab(b.dataset.tab)
+);
+});
 
-$("chatInput").onkeydown=e=>{
+el("sleepBtn").onclick=()=>{
+state.sleeping=!state.sleeping;
+
+if(!state.sleeping){
+state.sleepNight=localDay();
+state.stats.energy=100;
+}
+
+state.speech=state.sleeping?
+"晚安，明天见！":
+"醒啦！你找我吗？";
+
+eventLog(
+state.sleeping?"主动睡觉":"被叫醒了"
+);
+
+persist();
+renderHome();
+};
+
+el("payCancel").onclick=()=>{
+pendingPurchase=null;
+el("payDialog").close();
+};
+
+el("payDialog").addEventListener(
+"close",
+()=>{pendingPurchase=null;}
+);
+
+el("payConfirm").onclick=finishPurchase;
+
+el("search").oninput=e=>{
+searchText=e.target.value;
+showLimit=30;
+renderShop();
+};
+
+el("more").onclick=()=>{
+showLimit+=30;
+renderShop();
+};
+
+el("customBuy").onclick=()=>{
+const name=el("customName").value.trim();
+const price=Number(el("customPrice").value);
+
+if(
+!name||
+!Number.isSafeInteger(price)||
+price<=0
+){
+alert("请输入商品名称和有效价格");
+return;
+}
+
+beginPurchase({
+name,
+price,
+cat:el("customCat").value,
+kind:el("customKind").value
+});
+};
+
+el("topupBtn").onclick=()=>{
+const amount=Number(el("topupAmount").value);
+
+if(
+!Number.isSafeInteger(amount)||
+amount<=0
+){
+alert("请输入有效的充值金额");
+return;
+}
+
+if(!confirm(
+"确认你已在现实中预留或转入 "+
+won(amount)+"？\n充值不计入累计储蓄。"
+)){
+return;
+}
+
+state.wallet+=amount;
+
+state.walletHistory.unshift({
+type:"topup",
+amount,
+name:"钱包充值",
+date:new Date().toISOString()
+});
+
+el("topupAmount").value="";
+
+persist();
+renderRecords();
+};
+
+el("goalBtn").onclick=()=>{
+const n=Number(el("goalInput").value);
+
+if(
+!Number.isSafeInteger(n)||
+n<=0
+){
+alert("请输入有效目标金额");
+return;
+}
+
+state.goal=n;
+persist();
+renderRecords();
+};
+
+el("archiveDate").onchange=renderArchive;
+
+el("export").onclick=()=>{
+const blob=new Blob(
+[
+JSON.stringify({
+app:"小解情的日常",
+version:16,
+data:state
+},null,2)
+],
+{type:"application/json"}
+);
+
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+
+a.href=url;
+a.download="xieqing_backup.json";
+
+document.body.append(a);
+a.click();
+a.remove();
+
+setTimeout(
+()=>URL.revokeObjectURL(url),
+3000
+);
+};
+
+el("import").onclick=()=>{
+el("file").click();
+};
+
+el("file").onchange=async e=>{
+const f=e.target.files?.[0];
+if(!f)return;
+
+try{
+const obj=JSON.parse(
+await f.text()
+);
+
+if(
+!obj.data||
+!Array.isArray(obj.data.logs)
+){
+throw Error("不是有效的存档文件");
+}
+
+if(confirm(
+"导入会覆盖当前游戏记录，确定继续？"
+)){
+state=normalize(obj.data);
+el("archiveDate").value=localDay();
+
+persist();
+render();
+
+alert("存档恢复成功");
+}
+
+}catch(err){
+alert("导入失败："+err.message);
+}finally{
+e.target.value="";
+}
+};
+
+el("saveApi").onclick=()=>{
+const key=el("apiKey").value.trim();
+
+if(!key){
+el("keyMessage").textContent=
+"请填写密钥。";
+return;
+}
+
+try{
+localStorage.removeItem(API);
+sessionStorage.removeItem(API);
+
+(
+el("remember").checked?
+localStorage:
+sessionStorage
+).setItem(API,key);
+
+el("keyMessage").textContent=
+"设置已保存。";
+
+}catch{
+el("keyMessage").textContent=
+"浏览器无法保存密钥。";
+}
+};
+
+el("clearApi").onclick=()=>{
+try{
+localStorage.removeItem(API);
+sessionStorage.removeItem(API);
+}catch{}
+
+el("apiKey").value="";
+el("keyMessage").textContent=
+"密钥已清除。";
+};
+
+el("send").onclick=sendChat;
+
+el("chatInput").onkeydown=e=>{
 if(e.key==="Enter"){
 e.preventDefault();
 sendChat();
 }
 };
+}
+
+attachEvents();
+
+try{
+el("apiKey").value=getKey();
+el("remember").checked=
+!!localStorage.getItem(API);
+}catch{}
 
 showTab("home");
 </script>
